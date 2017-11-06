@@ -93,17 +93,21 @@ def alpha_beta_search(board, depth,
     beta = INFINITY
     best_val = None
 
+    #print("{}, {}, {}, {}".format("MAX", depth, alpha, beta))
     # max level
     for move, new_board in get_next_moves_fn(board):
         val = alpha_beta_board_value(False, alpha, beta, new_board, depth-1, eval_fn,
-                                          get_next_moves_fn, is_terminal_fn)
+                                         get_next_moves_fn, is_terminal_fn)
+        #print "\t ALPHA-BETA: column {} with rating {}".format(move, val)
 
         if val > alpha:
             alpha = val
             best_val = (val, move, new_board)
+
         if alpha>=beta:
             break
-    print "ALPHA-BETA: Decided on column %d with rating %d" % (move, val)
+        
+    #print "ALPHA-BETA: Decided on column {} with rating {}".format(best_val[1], best_val[0])
 
     return best_val[1]
 
@@ -113,15 +117,17 @@ def alpha_beta_board_value(maxlevel, alpha, beta, board, depth, eval_fn,
     """
     Alpha-beta helper function
     """
-
+   # print("\t\t{}, {}, {}, {}".format(("MAX" if maxlevel else "MIN"), depth, alpha, beta))
     if is_terminal_fn(depth, board):
-        return eval_fn(board)
+        return eval_fn(board) if maxlevel else eval_fn(board) * -1
 
     best_val = None
 
     for move, new_board in get_next_moves_fn(board):
         val = alpha_beta_board_value(not maxlevel, alpha, beta, new_board, depth-1, eval_fn,
                                      get_next_moves_fn, is_terminal_fn)
+
+        #print "\t\t {}: column {} with rating {}".format(("MAX" if maxlevel else "MIN"), move, val)
 
         if maxlevel:
             alpha = val if val > alpha else alpha
@@ -130,7 +136,7 @@ def alpha_beta_board_value(maxlevel, alpha, beta, board, depth, eval_fn,
             beta = val if val < beta else beta
         # cutoff
         if alpha >= beta:
-            break
+           break
 
     if maxlevel:
         return alpha
@@ -226,10 +232,10 @@ def run_test_tree_search(search, board, depth):
 ## Do you want us to use your code in a tournament against other students? See
 ## the description in the problem set. The tournament is completely optional
 ## and has no effect on your grade.
-COMPETE = (None)
+COMPETE = True
 
 ## The standard survey questions.
-HOW_MANY_HOURS_THIS_PSET_TOOK = ""
+HOW_MANY_HOURS_THIS_PSET_TOOK = "1"
 WHAT_I_FOUND_INTERESTING = "evalutation functions"
 WHAT_I_FOUND_BORING = "-"
 NAME = "antonia"
